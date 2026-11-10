@@ -1,0 +1,93 @@
+### LearnSprint - Increment 1 requests
+### With the sample data: admin is user 1, faculty are users 2 and 3, students are users 4 to 9.
+### Copy each request into Postman, or run this file in IntelliJ Ultimate / VS Code REST Client.
+
+@host = http://localhost:8080
+
+### READ all students
+GET {{host}}/api/students
+
+### READ one student
+GET {{host}}/api/students/4
+
+### CREATE a student
+POST {{host}}/api/students
+Content-Type: application/json
+
+{
+  "fname": "Maria Clara",
+  "lname": "Ibarra",
+  "email": "maria.ibarra@cit.edu",
+  "password": "student123",
+  "schoolId": "24-0009-999",
+  "program": "BS Computer Science",
+  "yearLevel": 1
+}
+
+### UPDATE a student (leave out "password" to keep the current one)
+PUT {{host}}/api/students/4
+Content-Type: application/json
+
+{
+  "fname": "Johnmark",
+  "lname": "Tanaleon",
+  "email": "johnmark.tanaleon@cit.edu",
+  "schoolId": "22-0001-101",
+  "program": "BS Information Technology",
+  "yearLevel": 4,
+  "totalPoints": 360,
+  "currentStreak": 6
+}
+
+### CREATE a course taught by faculty 2
+POST {{host}}/api/courses
+Content-Type: application/json
+
+{
+  "courseCode": "IT365",
+  "title": "Data Analytics 1",
+  "description": "Introduction to analytics tooling.",
+  "faculty": { "userId": 2 }
+}
+
+### CREATE a track inside course 1
+POST {{host}}/api/tracks
+Content-Type: application/json
+
+{
+  "title": "Testing the API",
+  "sequenceNo": 3,
+  "course": { "courseId": 1 }
+}
+
+### CREATE lesson progress done offline, still waiting to sync
+POST {{host}}/api/lesson-progress
+Content-Type: application/json
+
+{
+  "status": "COMPLETED",
+  "dateCompleted": "2026-11-11",
+  "isSynced": false,
+  "student": { "userId": 5 },
+  "lesson": { "lessonId": 3 }
+}
+
+### 400 - a required value is missing
+POST {{host}}/api/courses
+Content-Type: application/json
+
+{
+  "title": "No code and no faculty"
+}
+
+### 404 - the id does not exist
+GET {{host}}/api/courses/999
+
+### 409 - course 1 still has tracks, so the database refuses the delete
+DELETE {{host}}/api/courses/1
+
+### DELETE - the track created above (use the id from its response)
+DELETE {{host}}/api/tracks/4
+
+### Row counts of every table
+GET {{host}}/api/dashboard
